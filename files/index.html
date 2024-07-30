@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arithmacellarator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff; /* Light color for kids */
+        }
+
+        header {
+            background-color: #4caf50; /* Green background */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question, .menu {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .race-track {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 95%; /* Enlarged track width */
+            height: 500px; /* Enlarged track height */
+            background-color: #e0f7fa; /* Light blue track */
+            margin: 20px auto;
+            position: relative;
+            border: 3px solid #00796b; /* Dark teal border */
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .car {
+            width: 80px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 10px;
+            position: absolute;
+        }
+
+        .user-car {
+            background-image: url('char.png');
+        }
+
+        .bot-car {
+            background-image: url('bot.png');
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 20px;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background-color: #d32f2f; /* Red finish line */
+        }
+
+        button {
+            padding: 15px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            background-color: #0288d1; /* Blue buttons */
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        button:hover {
+            background-color: #01579b;
+        }
+
+        .option-button {
+            padding: 15px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ff5722; /* Orange buttons */
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .option-button:hover {
+            background-color: #e64a19;
+        }
+
+        .question-text {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #00796b; /* Dark teal */
+        }
+
+        .results {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .highlight-circle {
+            position: absolute;
+            border: 3px solid #ffeb3b; /* Yellow highlight */
+            border-radius: 50%;
+        }
+
+        .rules {
+            text-align: left;
+            background-color: #e0f7fa; /* Light blue background for rules */
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 80%;
+            font-size: 18px;
+            color: #004d40; /* Dark teal text color */
+        }
+
+        .finish-message {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            background: url('confetti.gif') no-repeat center center;
+            background-size: cover;
+            display: none;
+        }
+
+        .clapping {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            background: url('clapping.gif') no-repeat center center;
+            background-size: cover;
+            display: none;
+        }
+
+        .play-again-button {
+            padding: 15px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f57c00; /* Orange button */
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .play-again-button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <h1 style="display: inline; vertical-align: middle;">Arithmacellarator</h1>
+</header>
+
+    <main>
+        <div id="menu" class="menu">
+            <h2>Select Difficulty Level</h2>
+            <button onclick="showOperationSelection('easy')">Easy</button>
+            <button onclick="showOperationSelection('moderate')">Moderate</button>
+            <button onclick="showOperationSelection('hard')">Hard</button>
+<img src="logo.png" alt="Arithmacellarator X FinCode">
+        </div>
+        <div id="operation-selection" class="menu hidden">
+            <h2>Select Operation Type</h2>
+            <button onclick="showCarPrompt('addition')">Addition</button>
+            <button onclick="showCarPrompt('subtraction')">Subtraction</button>
+            <button onclick="showCarPrompt('multiplication')">Multiplication</button>
+            <button onclick="showCarPrompt('division')">Division</button>
+            <button onclick="showCarPrompt('mixed')">Mixed</button>
+        </div>
+        <div id="car-prompt" class="hidden">
+            <h2>Get Ready! This is your car:</h2>
+            <img src="char.png" alt="User Car" style="width: 160px; height: 50px;">
+            <div id="highlight-circle" class="highlight-circle"></div>
+            <div class="rules">
+                <h3>Game Rules:</h3>
+                <ul>
+                    <li>Cross the finish line to win the race.</li>
+                    <li>Answer questions within 3 seconds to maintain your speed.</li>
+                    <li>Your speed increases for correct answers and decreases for incorrect ones.</li>
+                    <li>You can either click the answer buttons or press numbers 1-4 on your keyboard to select answers.</li>
+                </ul>
+            </div>
+            <button onclick="startGame()">OK</button>
+        </div>
+        <div id="game" class="hidden">
+            <div class="question">
+                <p id="question-text" class="question-text"></p>
+                <div id="options-container"></div>
+            </div>
+            <div class="race-track" id="race-track">
+                <div class="car bot-car" id="bot1" style="left: 10%; top: 20%;"></div>
+                <div class="car bot-car" id="bot2" style="left: 10%; top: 40%;"></div>
+                <div class="car bot-car" id="bot3" style="left: 10%; top: 60%;"></div>
+                <div class="car bot-car" id="bot4" style="left: 10%; top: 80%;"></div>
+                <div class="car user-car" id="user" style="left: 10%; top: 90%;"></div>
+                <div class="finish-line"></div>
+            </div>
+            <div id="speed-display">Speed: 1.00</div> <!-- Display for speed -->
+        </div>
+        <div id="results" class="results"></div>
+        <div id="confetti" class="confetti"></div>
+        <div id="clapping" class="clapping"></div>
+    </main>
+    <script>
+        const questions = {
+            addition: generateAdditionQuestions,
+            subtraction: generateSubtractionQuestions,
+            multiplication: generateMultiplicationQuestions,
+            division: generateDivisionQuestions,
+            mixed: generateMixedQuestions
+        };
+
+        let currentQuestion;
+        let userSpeed = 0.5;
+        let interval;
+        let answerTimeout;
+        let selectedDifficulty;
+        let selectedMode;
+        let raceFinished = false;
+        let userPosition = 1;
+
+        const botSpeeds = [0.5, 0.6, 0.7, 0.8];
+        const botColors = [
+            'rgb(255, 0, 0)', // Red
+            'rgb(0, 255, 0)', // Green
+            'rgb(0, 0, 255)', // Blue
+            'rgb(255, 255, 0)' // Yellow
+        ];
+
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            if (key >= '1' && key <= '4') {
+                const index = parseInt(key) - 1;
+                const buttons = document.querySelectorAll('.option-button');
+                if (buttons[index]) {
+                    buttons[index].click();
+                }
+            }
+        });
+
+        function showOperationSelection(difficulty) {
+            selectedDifficulty = difficulty;
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('operation-selection').classList.remove('hidden');
+        }
+
+        function showCarPrompt(mode) {
+            selectedMode = mode;
+            document.getElementById('operation-selection').classList.add('hidden');
+            document.getElementById('car-prompt').classList.remove('hidden');
+            const userCar = document.getElementById('user');
+            userCar.style.width = '100px';
+            userCar.style.height = '40px';
+            document.getElementById('highlight-circle').style.width = '120px';
+            document.getElementById('highlight-circle').style.height = '50px';
+            document.getElementById('highlight-circle').style.borderColor = 'rgba(255, 255, 255, 0.7)';
+        }
+
+        function startGame() {
+            document.getElementById('car-prompt').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            generateQuestion();
+            startRace();
+        }
+
+        function generateQuestion() {
+            const operationFunction = questions[selectedMode];
+            currentQuestion = operationFunction();
+            document.getElementById('question-text').innerText = currentQuestion.question;
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.innerText = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+            startAnswerTimer();
+        }
+
+        function startAnswerTimer() {
+            answerTimeout = setTimeout(() => {
+                adjustSpeed(false);
+                generateQuestion();
+            }, 3000);
+        }
+
+        function checkAnswer(answer) {
+            clearTimeout(answerTimeout);
+            if (answer === currentQuestion.correct) {
+                adjustSpeed(true);
+                generateQuestion();
+            } else {
+                adjustSpeed(false);
+            }
+        }
+
+        function adjustSpeed(correct) {
+            if (correct) {
+                userSpeed += 0.2;
+            } else {
+                userSpeed -= 0.05;
+            }
+            document.getElementById('speed-display').innerText = `Speed: ${userSpeed.toFixed(2)}`;
+        }
+
+        function startRace() {
+            interval = setInterval(() => {
+                if (raceFinished) {
+                    clearInterval(interval);
+                    return;
+                }
+                moveCars();
+            }, 100);
+        }
+
+        function moveCars() {
+            const userCar = document.getElementById('user');
+            const bots = document.querySelectorAll('.bot-car');
+            let userLeft = parseFloat(userCar.style.left);
+            userLeft += userSpeed;
+            if (userLeft > 90) {
+                userLeft = 90;
+                finishRace();
+            }
+            userCar.style.left = `${userLeft}%`;
+
+            let positions = [];
+            bots.forEach((bot, index) => {
+                let botLeft = parseFloat(bot.style.left);
+                botLeft += (userSpeed * 0.6) + (index + 1) * 0.05; 
+                if (botLeft > 90) botLeft = 90;
+                bot.style.left = `${botLeft}%`;
+                positions.push(botLeft);
+            });
+
+            positions.sort((a, b) => b - a);
+            userPosition = positions.findIndex(pos => pos <= userLeft) + 1;
+        }
+
+        function finishRace() {
+            raceFinished = true;
+            const results = document.getElementById('results');
+            results.classList.add('show');
+            if (userPosition === 1) {
+                document.getElementById('confetti').style.display = 'block';
+                results.innerHTML = `<div class="finish-message">Congratulations! You came in 1st place!</div><br>You crossed the finish line with a speed of ${userSpeed.toFixed(2)}!`;
+            } else {
+                document.getElementById('clapping').style.display = 'block';
+                results.innerHTML = `<div class="finish-message">Your Position is: ${userPosition}!</div><br>You crossed the finish line with a speed of ${userSpeed.toFixed(2)}!`;
+            }
+            document.getElementById('play-again').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('confetti').style.display = 'none';
+            document.getElementById('clapping').style.display = 'none';
+            document.getElementById('play-again').classList.add('hidden');
+            document.getElementById('menu').classList.remove('hidden');
+            document.getElementById('game').classList.add('hidden');
+        }
+
+        function generateAdditionQuestions() {
+            const a = Math.floor(Math.random() * 10);
+            const b = Math.floor(Math.random() * 10);
+            return {
+                question: `${a} + ${b} = ?`,
+                options: [
+                    a + b,
+                    a + b + 1,
+                    a + b - 1,
+                    a + b + 2
+                ].sort(() => Math.random() - 0.5),
+                correct: a + b
+            };
+        }
+
+        function generateSubtractionQuestions() {
+            const a = Math.floor(Math.random() * 10) + 10;
+            const b = Math.floor(Math.random() * 10);
+            return {
+                question: `${a} - ${b} = ?`,
+                options: [
+                    a - b,
+                    a - b + 1,
+                    a - b - 1,
+                    a - b + 2
+                ].sort(() => Math.random() - 0.5),
+                correct: a - b
+            };
+        }
+
+        function generateMultiplicationQuestions() {
+            const a = Math.floor(Math.random() * 10);
+            const b = Math.floor(Math.random() * 10);
+            return {
+                question: `${a} x ${b} = ?`,
+                options: [
+                    a * b,
+                    a * b + 1,
+                    a * b - 1,
+                    a * b + 2
+                ].sort(() => Math.random() - 0.5),
+                correct: a * b
+            };
+        }
+
+        function generateDivisionQuestions() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+            return {
+                question: `${a * b} ÷ ${b} = ?`,
+                options: [
+                    a,
+                    a + 1,
+                    a - 1,
+                    a + 2
+                ].sort(() => Math.random() - 0.5),
+                correct: a
+            };
+        }
+
+        function generateMixedQuestions() {
+            const operations = ['addition', 'subtraction', 'multiplication', 'division'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            return questions[operation]();
+        }
+    </script>
+</body>
+</html>
